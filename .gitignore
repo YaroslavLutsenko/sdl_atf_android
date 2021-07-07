@@ -35,3 +35,7 @@ local.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+/gradle/wrapper/gradle-wrapper.properties
+/.idea/.gitignore
+/.idea/jarRepositories.xml
+/.idea/gradle.xml
