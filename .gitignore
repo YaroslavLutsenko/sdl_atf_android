@@ -39,3 +39,4 @@ Thumbs.db
 /.idea/.gitignore
 /.idea/jarRepositories.xml
 /.idea/gradle.xml
+/gradle/wrapper/gradle-wrapper.jar
