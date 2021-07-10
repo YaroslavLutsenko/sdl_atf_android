@@ -38,7 +38,6 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = " SdlRouterService";
     // Key names received from the BluetoothSerialServer Handler
-    private static final long MS_TILL_TIMEOUT = 2500;
     private static final int READ_BUFFER_SIZE = 4096;
     private final Object THREAD_LOCK = new Object();
 
@@ -493,12 +492,6 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
 
                 synchronized (MultiplexBluetoothTransport.this) {
                     byte[] data = Arrays.copyOf(buffer, bytesRead);
-                    StringBuilder builder = new StringBuilder("<= " + data.length + ": ");
-                    for (byte b: data){
-                        builder.append(b);
-                        builder.append(",");
-                    }
-                    LogTool.logWarning(TAG, builder.toString());
                     LogTool.logInfo(TAG, "successfully got data");
                     handler.obtainMessage(SdlRouterService.MESSAGE_READ, data).sendToTarget();
                 }

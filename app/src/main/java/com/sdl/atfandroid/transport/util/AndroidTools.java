@@ -6,7 +6,12 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.usb.UsbAccessory;
+import android.hardware.usb.UsbManager;
 import android.os.BatteryManager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class AndroidTools {
 
@@ -22,8 +27,29 @@ public class AndroidTools {
         if (intent == null) {
             return false;
         }
+        context.getSystemService(Context.USB_SERVICE);
         int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
         return plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
+    }
+
+    /**
+     * Checks if the phone is connected to sdl core or not
+     *
+     * @param manager a UsbManager instance
+     * @return UsbAccessory value that represents whether the sdl accessory available or not
+     */
+    public static @Nullable UsbAccessory getSdlAccessory(@NonNull UsbManager manager) {
+        UsbAccessory[] accessoryList = manager.getAccessoryList();
+        if (accessoryList == null){
+            return null;
+        }
+        for (UsbAccessory accessory: accessoryList){
+            String manufacturer = accessory.getManufacturer();
+            if (manufacturer != null && manufacturer.equalsIgnoreCase("SDL")){
+                return accessory;
+            }
+        }
+        return null;
     }
 
     /**
