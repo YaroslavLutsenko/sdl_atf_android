@@ -2,6 +2,8 @@ package com.sdl.atfandroid.http;
 
 import android.util.Log;
 
+import com.sdl.atfandroid.transport.util.AndroidTools;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,12 +12,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class HttpServer extends Thread {
@@ -50,7 +49,7 @@ public class HttpServer extends Thread {
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(8080,50, InetAddress.getByName(getIPAddress(true)));
+            serverSocket = new ServerSocket(8080,50, InetAddress.getByName(AndroidTools.getIPAddress(true)));
             Log.w(TAG, "=> listening... host " + serverSocket.getInetAddress().getHostName() + " port " + serverSocket.getLocalPort());
 
             while (!isHalted && serverSocket != null && !serverSocket.isClosed() && serverSocket.isBound()) {
@@ -121,7 +120,7 @@ public class HttpServer extends Thread {
             try {
                 reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 writer = new PrintWriter(clientSocket.getOutputStream(), true);
-                HttpRequest request = HttpParser.parseLine(reader.readLine());
+                HttpRequest request = HttpRequest.parse(reader.readLine());
 
                 if (request.isValid()){
                     JSONObject object = new JSONObject();
@@ -151,37 +150,5 @@ public class HttpServer extends Thread {
             Log.w(TAG, "end working with socket");
             removeSession(sessionId);
         }
-    }
-
-    /**
-     * Get IP address from first non-localhost interface
-     * @param useIPv4 true=return ipv4, false=return ipv6
-     * @return  address or empty string
-     */
-    public static String getIPAddress(boolean useIPv4) {
-        try {
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface intf : interfaces) {
-                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
-                for (InetAddress addr : addrs) {
-                    if (!addr.isLoopbackAddress()) {
-                        String sAddr = addr.getHostAddress();
-                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
-                        boolean isIPv4 = sAddr.indexOf(':')<0;
-
-                        if (useIPv4) {
-                            if (isIPv4)
-                                return sAddr;
-                        } else {
-                            if (!isIPv4) {
-                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
-                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception ignored) { } // for now eat exceptions
-        return "127.0.0.1";
     }
 }

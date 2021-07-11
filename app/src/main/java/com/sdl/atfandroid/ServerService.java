@@ -14,23 +14,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.sdl.atfandroid.http.HttpServer;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.sdl.atfandroid.transport.util.AndroidTools;
 
 public class ServerService extends Service {
     private static final String TAG = "HttpServer";
@@ -93,7 +77,7 @@ public class ServerService extends Service {
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
                 Notification serviceNotification = new Notification.Builder(this, channel.getId())
-                        .setContentTitle(HttpServer.getIPAddress(true) + ":" + "8080" + " listening...")
+                        .setContentTitle(AndroidTools.getIPAddress(true) + ":" + "8080" + " listening...")
                         .setSmallIcon(R.mipmap.ic_sdl)
                         .build();
                 startForeground(FOREGROUND_HTTP_SERVICE_ID, serviceNotification);
