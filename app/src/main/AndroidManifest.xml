@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.sdl.atfandroid">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Required to check if WiFi is enabled -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- Required to use the USB Accessory mode -->
+    <uses-feature android:name="android.hardware.usb.accessory" />
+
+
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_sdl"
         android:label="@string/app_name"
         android:theme="@style/Theme.Atfandroid"
-        android:fullBackupContent="false">
-
+        tools:ignore="DeepLinks">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name="com.sdl.atfandroid.ServerService"
+            android:foregroundServiceType="connectedDevice">
+        </service>
+
     </application>
 
 </manifest>
