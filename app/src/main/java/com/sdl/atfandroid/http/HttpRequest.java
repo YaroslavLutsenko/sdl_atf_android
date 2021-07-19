@@ -11,8 +11,6 @@ class HttpRequest {
     @Nullable private String path;
     @Nullable private Map<String, String> params;
 
-    public boolean isValid() { return method != null && path != null; }
-
     static HttpRequest parse(String line) {
         HttpRequest request = new HttpRequest();
         try {

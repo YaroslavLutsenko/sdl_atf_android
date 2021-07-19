@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 
-import com.sdl.atfandroid.SdlRouterService;
+import com.sdl.atfandroid.core.CoreRouter;
 import com.sdl.atfandroid.transport.enums.TransportType;
 import com.sdl.atfandroid.transport.util.LogTool;
 
@@ -28,7 +28,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport {
     private Boolean connectionSuccessful = null;
 
     public MultiplexUsbTransport(ParcelFileDescriptor parcelFileDescriptor, Handler handler, UsbAccessory accessory) {
-        super(handler, TransportType.USB);
+        super(handler, TransportType.USB, 0);
         if (parcelFileDescriptor == null || accessory == null) {
             LogTool.logError(TAG, "Error with object");
             this.parcelFileDescriptor = null;
@@ -73,7 +73,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport {
         writerThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
+        Message msg = handler.obtainMessage(CoreRouter.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
         bundle.putString(DEVICE_NAME, connectedDeviceName);
         bundle.putString(DEVICE_ADDRESS, connectedDeviceAddress);
@@ -141,7 +141,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport {
      */
     private void connectionFailed() {
         // Send a failure message back to the Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_LOG);
+        Message msg = handler.obtainMessage(CoreRouter.MESSAGE_LOG);
         Bundle bundle = new Bundle();
         bundle.putString(LOG, "Unable to connect device");
         msg.setData(bundle);
@@ -153,7 +153,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport {
      */
     private void connectionLost() {
         // Send a failure message back to the Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_LOG);
+        Message msg = handler.obtainMessage(CoreRouter.MESSAGE_LOG);
         Bundle bundle = new Bundle();
         bundle.putString(LOG, "Device connection was lost");
         msg.setData(bundle);
@@ -208,7 +208,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport {
                         }
                         LogTool.logWarning(TAG, builder.toString());
                         LogTool.logInfo(TAG, "successfully got data");
-                        handler.obtainMessage(SdlRouterService.MESSAGE_READ, data).sendToTarget();
+                        handler.obtainMessage(CoreRouter.MESSAGE_READ, sessionId, 0, data).sendToTarget();
                     }
 
                 } catch (IOException e) {

@@ -1,21 +1,41 @@
 package com.sdl.atfandroid.transport.util;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
+import android.net.ConnectivityManager;
+import android.net.MacAddress;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
+import com.sdl.atfandroid.AtfApplication;
+
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
+
+import javax.net.SocketFactory;
 
 public class AndroidTools {
 
@@ -23,10 +43,10 @@ public class AndroidTools {
      * Checks if the usb cable is physically connected or not
      * Note: the intent here is a sticky intent so registerReceiver is actually a synchronous call and doesn't register a receiver on each call
      *
-     * @param context a context instance
      * @return boolean value that represents whether the usb cable is physically connected or not
      */
-    public static boolean isUSBCableConnected(Context context) {
+    public static boolean isUSBCableConnected() {
+        Context context = AtfApplication.getInstance().getApplicationContext();
         Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (intent == null) {
             return false;
@@ -57,6 +77,15 @@ public class AndroidTools {
     }
 
     /**
+     * Checks if the phone is connected to sdl core or not
+     *
+     * @return UsbAccessory value that represents whether the sdl accessory available or not
+     */
+    public static @Nullable UsbAccessory getSdlAccessory() {
+        return getSdlAccessory((UsbManager) AtfApplication.getInstance().getApplicationContext().getSystemService(Context.USB_SERVICE));
+    }
+
+    /**
      * Checks if the usb cable is physically connected or not
      * Note: the intent here is a sticky intent so registerReceiver is actually a synchronous call and doesn't register a receiver on each call
      *
@@ -69,6 +98,7 @@ public class AndroidTools {
             return false;
         }
 
+        // todo: Check this case
         int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
         if (state != BluetoothAdapter.STATE_CONNECTING && state != BluetoothAdapter.STATE_CONNECTED) {
             //False positive

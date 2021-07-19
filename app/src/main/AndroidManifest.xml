@@ -18,10 +18,11 @@
         android:icon="@mipmap/ic_sdl"
         android:label="@string/app_name"
         android:theme="@style/Theme.Atfandroid"
+        android:name=".AtfApplication"
         tools:ignore="DeepLinks">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

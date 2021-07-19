@@ -11,6 +11,7 @@ public enum TransportType {
 
     public static TransportType valueForString(String value) {
         try {
+            if (value.toLowerCase().equals("wifi")) return TCP;
             return valueOf(value);
         } catch (Exception e) {
             return null;

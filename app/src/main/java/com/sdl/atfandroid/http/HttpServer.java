@@ -4,9 +4,6 @@ import android.util.Log;
 
 import com.sdl.atfandroid.transport.util.AndroidTools;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -54,6 +51,7 @@ public class HttpServer extends Thread {
 
             while (!isHalted && serverSocket != null && !serverSocket.isClosed() && serverSocket.isBound()) {
                 Socket socket = serverSocket.accept();
+                socket.setSoTimeout(5000);
 
                 long sessionId = System.nanoTime();
                 final HttpConnectionWorkerThread thread = new HttpConnectionWorkerThread(socket, sessionId);
@@ -62,36 +60,21 @@ public class HttpServer extends Thread {
                 sessionsById.put(sessionId, thread);
                 Log.w(TAG, "started new HttpRequest " + sessionId);
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        while (true){
-                            try {
-                                Thread.sleep(10000);
-
-                                Log.w(TAG, "sessions: " + sessionsById.size());
-                                for (Map.Entry<Long, Thread> entry : sessionsById.entrySet()) {
-                                    Log.w(TAG, entry.getKey() + "/" + entry.getValue());
-                                    Log.w(TAG, (entry.getValue() == null) + "/" + (entry.getValue() == null || entry.getValue().isAlive()));
-
-                                }
-
-
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }).start();
-
 //                new Thread(new Runnable() {
 //                    @Override
 //                    public void run() {
-//                        while (!isHalted && serverSocket != null && !serverSocket.isClosed()) {
-//                            Log.w(TAG, "thread is alive " + (thread.isAlive()) + " token isConnected " + thread.clientSocket.isConnected() + " isClosed " + thread.clientSocket.isClosed());
-//
+//                        while (true){
 //                            try {
 //                                Thread.sleep(10000);
+//
+//                                Log.w(TAG, "sessions: " + sessionsById.size());
+//                                for (Map.Entry<Long, Thread> entry : sessionsById.entrySet()) {
+//                                    Log.w(TAG, entry.getKey() + "/" + entry.getValue());
+//                                    Log.w(TAG, (entry.getValue() == null) + "/" + (entry.getValue() == null || entry.getValue().isAlive()));
+//
+//                                }
+//
+//
 //                            } catch (InterruptedException e) {
 //                                e.printStackTrace();
 //                            }
@@ -122,23 +105,9 @@ public class HttpServer extends Thread {
                 writer = new PrintWriter(clientSocket.getOutputStream(), true);
                 HttpRequest request = HttpRequest.parse(reader.readLine());
 
-                if (request.isValid()){
-                    JSONObject object = new JSONObject();
-                    try {
-                        object.put("success", true);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    Log.w(TAG, object.toString());
-                    writer.print("HTTP/1.0 200" + "\r\n");
-                    writer.print("Content type: application/json" + "\r\n");
-                    writer.print("\r\n");
-                    writer.print(object);
-                    writer.flush();
-                } else {
-
-                }
-
+                String response = HttpRepository.getInstance().processRequest(request);
+                writer.print(response);
+                writer.flush();
 
                 reader.close();
                 writer.close();

@@ -13,6 +13,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.sdl.atfandroid.core.CoreRouter;
 import com.sdl.atfandroid.http.HttpServer;
 import com.sdl.atfandroid.transport.util.AndroidTools;
 
@@ -21,7 +22,7 @@ public class ServerService extends Service {
     private static final String APP_ID = "8678309";
     private static final int FOREGROUND_HTTP_SERVICE_ID = 111;
 
-    private static HttpServer server = null;
+    private HttpServer server = null;
 
     @Nullable @Override
     public IBinder onBind(Intent intent) { return null; }
@@ -38,6 +39,7 @@ public class ServerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        CoreRouter.instance.init();
         startServer();
         return START_STICKY;
     }
@@ -46,6 +48,7 @@ public class ServerService extends Service {
     public void onDestroy() {
         Log.w(TAG, "destroying HttpServer");
         stopServer();
+        CoreRouter.instance.close();
         super.onDestroy();
     }
 

@@ -1,13 +1,12 @@
 package com.sdl.atfandroid.transport;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.sdl.atfandroid.SdlRouterService;
+import com.sdl.atfandroid.core.CoreRouter;
 import com.sdl.atfandroid.transport.enums.TransportType;
 import com.sdl.atfandroid.transport.util.LogTool;
 import com.sdl.atfandroid.transport.utl.WiFiSocketFactory;
@@ -28,7 +27,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 
     private static final int READ_BUFFER_SIZE = 4096;
     private static final int RECONNECT_DELAY = 5000;
-    private static final int RECONNECT_RETRY_COUNT = 30;
+    private static final int RECONNECT_RETRY_COUNT = 5;
 
     private final String ipAddress;
     private final int port;
@@ -38,15 +37,13 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
     private OutputStream mOutputStream = null;
     private MultiplexTcpTransport.TcpTransportThread mThread = null;
     private WriterThread writerThread;
-    private final Context mContext;
 
-    public MultiplexTcpTransport(int port, String ipAddress, boolean autoReconnect, Handler handler, Context context) {
-        super(handler, TransportType.TCP);
+    public MultiplexTcpTransport(int port, String ipAddress, boolean autoReconnect, Handler handler, int sessionId) {
+        super(handler, TransportType.TCP, sessionId);
         this.ipAddress = ipAddress;
         this.port = port;
         connectedDeviceAddress = ipAddress + ":" + port;
         this.autoReconnect = autoReconnect;
-        mContext = context;
         setState(STATE_NONE);
     }
 
@@ -69,7 +66,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
         }
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
+        Message msg = handler.obtainMessage(CoreRouter.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
         bundle.putString(DEVICE_NAME, connectedDeviceName);
         bundle.putString(DEVICE_ADDRESS, connectedDeviceAddress);
@@ -184,7 +181,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
                         }
 
                         LogTool.logInfo(TAG,String.format("TCPTransport.connect: Socket is closed. Trying to connect to %s", getAddress()));
-                        mSocket = WiFiSocketFactory.createSocket(mContext);
+                        mSocket = WiFiSocketFactory.createSocket();
                         mSocket.connect(new InetSocketAddress(ipAddress, port));
                         mOutputStream = mSocket.getOutputStream();
                         mInputStream = mSocket.getInputStream();
@@ -265,7 +262,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
                     synchronized (MultiplexTcpTransport.this) {
                         byte[] data = Arrays.copyOf(buffer, bytesRead);
                         LogTool.logInfo(TAG, "TCPTransport.sendBytesOverTransport: successfully got data");
-                        handler.obtainMessage(SdlRouterService.MESSAGE_READ, data).sendToTarget();
+                        handler.obtainMessage(CoreRouter.MESSAGE_READ, sessionId, 0, data).sendToTarget();
                     }
                 }
 
@@ -373,7 +370,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
         }
     }
 
-    private final class OutPacket {
+    private static final class OutPacket {
         final byte[] bytes;
         final int count;
         final int offset;

@@ -9,6 +9,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Build;
 
+import com.sdl.atfandroid.AtfApplication;
 import com.sdl.atfandroid.transport.util.LogTool;
 
 import java.io.IOException;
@@ -29,9 +30,9 @@ public class WiFiSocketFactory {
      *
      * @return a Socket instance, preferably bound to a Wi-Fi network
      */
-    public static Socket createSocket(Context context) {
+    public static Socket createSocket() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Socket socket = createWiFiSocket(context);
+            Socket socket = createWiFiSocket(AtfApplication.getInstance().getApplicationContext());
             if (socket != null) {
                 LogTool.logInfo(TAG, "Created a Socket bound to Wi-Fi network");
                 return socket;

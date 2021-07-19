@@ -10,10 +10,12 @@ import com.sdl.atfandroid.transport.enums.TransportType;
 public class TransportRecord implements Parcelable {
     private TransportType type;
     private String address;
+    private final int sessionId;
 
-    public TransportRecord(TransportType type, String address) {
+    public TransportRecord(TransportType type, String address, int sessionId) {
         this.type = type;
         this.address = address;
+        this.sessionId = sessionId;
     }
 
     public TransportType getType() {
@@ -23,6 +25,8 @@ public class TransportRecord implements Parcelable {
     public String getAddress() {
         return address;
     }
+
+    public int getSessionId() { return sessionId; }
 
     @Override
     public boolean equals(Object obj) {
@@ -34,7 +38,8 @@ public class TransportRecord implements Parcelable {
             TransportRecord record = (TransportRecord) obj;
             return record.type != null && record.type.equals(type)  //Transport type is the same
                     && ((record.address == null && address == null) //Both addresses are null
-                    || (record.address != null && record.address.equals(address))); //Or they match
+                    || (record.address != null && record.address.equals(address)) //Or they match
+                    && record.sessionId == sessionId); // session is the same
         }
 
         return super.equals(obj);
@@ -48,6 +53,8 @@ public class TransportRecord implements Parcelable {
         builder.append(type.name());
         builder.append(" Address: ");
         builder.append(address);
+        builder.append(" SessionId: ");
+        builder.append(sessionId);
         return builder.toString();
     }
 
@@ -62,6 +69,8 @@ public class TransportRecord implements Parcelable {
         if (p.readInt() == 1) { //We should have a transport address attached
             address = p.readString();
         }
+
+        sessionId = p.readInt();
     }
 
     @Override
@@ -80,7 +89,11 @@ public class TransportRecord implements Parcelable {
         if (address != null) {
             dest.writeString(address);
         }
+
+        dest.writeInt(sessionId);
     }
+
+
 
     public static final Parcelable.Creator<TransportRecord> CREATOR = new Parcelable.Creator<TransportRecord>() {
         public TransportRecord createFromParcel(Parcel in) {

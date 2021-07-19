@@ -12,7 +12,7 @@ import android.os.Message;
 
 import androidx.annotation.RequiresPermission;
 
-import com.sdl.atfandroid.SdlRouterService;
+import com.sdl.atfandroid.core.CoreRouter;
 import com.sdl.atfandroid.transport.enums.TransportType;
 import com.sdl.atfandroid.transport.util.LogTool;
 import com.sdl.atfandroid.transport.utl.TransportRecord;
@@ -54,7 +54,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
      * @param handler A Handler to send messages back to the UI Activity
      */
     public MultiplexBluetoothTransport(Handler handler) {
-        super(handler, TransportType.BLUETOOTH);
+        super(handler, TransportType.BLUETOOTH, 0);
     }
 
     //These methods are used so we can have a semi-static reference to the Accept Thread (Static reference inherited by housing class)
@@ -151,12 +151,12 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
             connectedDeviceAddress = device.getAddress();
             if (connectedDeviceAddress != null) {
                 //Update the transport record with the address
-                transportRecord = new TransportRecord(transportType, connectedDeviceAddress);
+                transportRecord = new TransportRecord(transportType, connectedDeviceAddress, 0);
             }
         }
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
+        Message msg = handler.obtainMessage(CoreRouter.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
         if (connectedDeviceName != null) {
             bundle.putString(DEVICE_NAME, connectedDeviceName);
@@ -236,7 +236,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
      */
     private void connectionFailed() {
         // Send a failure message back to the Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_LOG);
+        Message msg = handler.obtainMessage(CoreRouter.MESSAGE_LOG);
         Bundle bundle = new Bundle();
         bundle.putString(LOG, "Unable to connect device");
         msg.setData(bundle);
@@ -251,7 +251,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
      */
     private void connectionLost() {
         // Send a failure message back to the Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_LOG);
+        Message msg = handler.obtainMessage(CoreRouter.MESSAGE_LOG);
         Bundle bundle = new Bundle();
         bundle.putString(LOG, "Device connection was lost");
         msg.setData(bundle);
@@ -493,7 +493,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
                 synchronized (MultiplexBluetoothTransport.this) {
                     byte[] data = Arrays.copyOf(buffer, bytesRead);
                     LogTool.logInfo(TAG, "successfully got data");
-                    handler.obtainMessage(SdlRouterService.MESSAGE_READ, data).sendToTarget();
+                    handler.obtainMessage(CoreRouter.MESSAGE_READ, sessionId, 0, data).sendToTarget();
                 }
             }
         }

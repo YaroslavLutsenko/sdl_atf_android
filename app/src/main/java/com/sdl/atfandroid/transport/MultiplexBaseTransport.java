@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import com.sdl.atfandroid.SdlRouterService;
+import com.sdl.atfandroid.core.CoreRouter;
 import com.sdl.atfandroid.transport.enums.TransportType;
 import com.sdl.atfandroid.transport.utl.TransportRecord;
 
@@ -33,10 +33,12 @@ public abstract class MultiplexBaseTransport {
     protected String connectedDeviceName = null;
     public String connectedDeviceAddress = null;
 
+    protected int sessionId;
 
-    protected MultiplexBaseTransport(Handler handler, TransportType transportType) {
+    protected MultiplexBaseTransport(Handler handler, TransportType transportType, int sessionId) {
         this.handler = handler;
         this.transportType = transportType;
+        this.sessionId = sessionId;
     }
 
     protected synchronized void setState(int state) {
@@ -53,7 +55,7 @@ public abstract class MultiplexBaseTransport {
 
         // Give the new state to the Handler so the UI Activity can update
         //Also sending the previous state so we know if we lost a connection
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, arg2, getTransportRecord());
+        Message msg = handler.obtainMessage(CoreRouter.MESSAGE_STATE_CHANGE, state, arg2, getTransportRecord());
         msg.setData(bundle);
         msg.sendToTarget();
     }
@@ -73,7 +75,7 @@ public abstract class MultiplexBaseTransport {
      */
     public TransportRecord getTransportRecord() {
         if (transportRecord == null) {
-            transportRecord = new TransportRecord(transportType, connectedDeviceAddress);
+            transportRecord = new TransportRecord(transportType, connectedDeviceAddress, sessionId);
         }
         return transportRecord;
     }
