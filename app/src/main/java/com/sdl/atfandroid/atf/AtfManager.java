@@ -5,7 +5,7 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.sdl.atfandroid.core.CoreRouter;
-import com.sdl.atfandroid.transport.util.LogTool;
+import com.sdl.atfandroid.util.LogTool;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;

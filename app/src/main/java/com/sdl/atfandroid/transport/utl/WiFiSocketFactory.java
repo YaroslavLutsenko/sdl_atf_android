@@ -10,7 +10,7 @@ import android.net.NetworkCapabilities;
 import android.os.Build;
 
 import com.sdl.atfandroid.AtfApplication;
-import com.sdl.atfandroid.transport.util.LogTool;
+import com.sdl.atfandroid.util.LogTool;
 
 import java.io.IOException;
 import java.net.Socket;

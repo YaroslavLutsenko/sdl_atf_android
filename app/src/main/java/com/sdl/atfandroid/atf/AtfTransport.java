@@ -5,8 +5,8 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 
 import com.sdl.atfandroid.core.CoreRouter;
-import com.sdl.atfandroid.transport.util.AndroidTools;
-import com.sdl.atfandroid.transport.util.LogTool;
+import com.sdl.atfandroid.util.AndroidTools;
+import com.sdl.atfandroid.util.LogTool;
 
 import java.io.IOException;
 import java.io.InputStream;

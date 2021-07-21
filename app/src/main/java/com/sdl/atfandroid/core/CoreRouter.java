@@ -8,10 +8,9 @@ import com.sdl.atfandroid.core.monitor.OperationMonitor;
 import com.sdl.atfandroid.transport.TransportManager;
 import com.sdl.atfandroid.transport.TransportManagerBase.TransportEventListener;
 import com.sdl.atfandroid.transport.enums.TransportType;
-import com.sdl.atfandroid.transport.util.LogTool;
+import com.sdl.atfandroid.util.LogTool;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Handler;
 
 import static com.sdl.atfandroid.core.monitor.Reporter.ATF;
 import static com.sdl.atfandroid.core.monitor.Reporter.SDL;
@@ -132,6 +131,7 @@ public class CoreRouter {
             @Override
             public void onPacketReceived(byte[] bytes, TransportType type, int sessionId) {
                 LogTool.logWarning(TAG, "<= onPacketReceived transportEventListener sessionId " + sessionId + " bytes " + bytes.length);
+                LogTool.logToFile(TAG, bytes);
                 atfManager.write(bytes, sessionId);
             }
 
@@ -177,6 +177,7 @@ public class CoreRouter {
                 LogTool.logWarning(TAG, "ATF onAtfDisconnected " + sessionId);
                 sessionCreationMonitor.handleResult(false, ATF);
                 sessionDeletionMonitor.handleResult(true, ATF);
+                transportManager.removeSession(sessionId);
             }
         };
     }

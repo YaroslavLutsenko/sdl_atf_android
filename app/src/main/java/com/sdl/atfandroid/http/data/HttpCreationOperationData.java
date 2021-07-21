@@ -3,7 +3,7 @@ package com.sdl.atfandroid.http.data;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sdl.atfandroid.transport.util.AndroidTools;
+import com.sdl.atfandroid.util.AndroidTools;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -6,7 +6,7 @@ import com.sdl.atfandroid.http.data.HttpCreationOperationData;
 import com.sdl.atfandroid.http.data.HttpDeletionOperationData;
 import com.sdl.atfandroid.http.data.HttpDeviceInfoData;
 import com.sdl.atfandroid.transport.enums.TransportType;
-import com.sdl.atfandroid.transport.util.AndroidTools;
+import com.sdl.atfandroid.util.AndroidTools;
 
 import java.util.ArrayList;
 import java.util.List;

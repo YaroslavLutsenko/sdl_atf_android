@@ -1,4 +1,4 @@
-package com.sdl.atfandroid;
+package com.sdl.atfandroid.http;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -13,12 +13,13 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.sdl.atfandroid.R;
 import com.sdl.atfandroid.core.CoreRouter;
-import com.sdl.atfandroid.http.HttpServer;
-import com.sdl.atfandroid.transport.util.AndroidTools;
+import com.sdl.atfandroid.util.AndroidTools;
+import com.sdl.atfandroid.util.LogTool;
 
 public class ServerService extends Service {
-    private static final String TAG = "HttpServer";
+    private static final String TAG = ServerService.class.getSimpleName();
     private static final String APP_ID = "8678309";
     private static final int FOREGROUND_HTTP_SERVICE_ID = 111;
 
@@ -29,7 +30,7 @@ public class ServerService extends Service {
 
     @Override
     public void onCreate() {
-        Log.w(TAG, "creating HttpServer");
+        LogTool.logInfo(TAG, "Creating HttpServer");
         super.onCreate();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -57,7 +58,7 @@ public class ServerService extends Service {
             server = new HttpServer();
             server.setName("HttpServer");
             server.start();
-            Log.w(TAG, "started HttpServer thread");
+            LogTool.logInfo(TAG, "Started HttpServer thread");
         }
     }
 

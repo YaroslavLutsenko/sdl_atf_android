@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.sdl.atfandroid.core.CoreRouter;
 import com.sdl.atfandroid.transport.enums.TransportType;
-import com.sdl.atfandroid.transport.util.LogTool;
+import com.sdl.atfandroid.util.LogTool;
 import com.sdl.atfandroid.transport.utl.WiFiSocketFactory;
 
 import java.io.IOException;

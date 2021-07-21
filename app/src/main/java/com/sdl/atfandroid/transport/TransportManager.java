@@ -4,10 +4,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.sdl.atfandroid.atf.AtfTransport;
 import com.sdl.atfandroid.core.CoreRouter;
 import com.sdl.atfandroid.transport.enums.TransportType;
-import com.sdl.atfandroid.transport.util.LogTool;
+import com.sdl.atfandroid.util.LogTool;
 import com.sdl.atfandroid.transport.utl.TransportRecord;
 
 import java.lang.ref.WeakReference;

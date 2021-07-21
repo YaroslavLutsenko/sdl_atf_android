@@ -8,7 +8,7 @@ import android.os.ParcelFileDescriptor;
 
 import com.sdl.atfandroid.core.CoreRouter;
 import com.sdl.atfandroid.transport.enums.TransportType;
-import com.sdl.atfandroid.transport.util.LogTool;
+import com.sdl.atfandroid.util.LogTool;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;

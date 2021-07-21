@@ -2,7 +2,8 @@ package com.sdl.atfandroid.http;
 
 import android.util.Log;
 
-import com.sdl.atfandroid.transport.util.AndroidTools;
+import com.sdl.atfandroid.util.AndroidTools;
+import com.sdl.atfandroid.util.LogTool;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class HttpServer extends Thread {
     public void run() {
         try {
             serverSocket = new ServerSocket(8080,50, InetAddress.getByName(AndroidTools.getIPAddress(true)));
-            Log.w(TAG, "=> listening... host " + serverSocket.getInetAddress().getHostName() + " port " + serverSocket.getLocalPort());
+            LogTool.logInfo(TAG, "Listening: host " + serverSocket.getInetAddress().getHostName() + " port " + serverSocket.getLocalPort());
 
             while (!isHalted && serverSocket != null && !serverSocket.isClosed() && serverSocket.isBound()) {
                 Socket socket = serverSocket.accept();
@@ -55,10 +56,10 @@ public class HttpServer extends Thread {
 
                 long sessionId = System.nanoTime();
                 final HttpConnectionWorkerThread thread = new HttpConnectionWorkerThread(socket, sessionId);
-                thread.setName("HttpRequest thread: " + sessionId);
+                thread.setName("HttpConnectionWorkerThread: " + sessionId);
                 thread.start();
                 sessionsById.put(sessionId, thread);
-                Log.w(TAG, "started new HttpRequest " + sessionId);
+                Log.w(TAG, "started new thread " + thread.getName());
 
 //                new Thread(new Runnable() {
 //                    @Override

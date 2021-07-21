@@ -34,7 +34,7 @@
                 android:resource="@xml/accessory_filter" />
         </activity>
         <service
-            android:name="com.sdl.atfandroid.ServerService"
+            android:name="com.sdl.atfandroid.http.ServerService"
             android:foregroundServiceType="connectedDevice">
         </service>
 

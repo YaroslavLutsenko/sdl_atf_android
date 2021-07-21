@@ -1,7 +1,8 @@
 package com.sdl.atfandroid;
 
 import android.app.Application;
-import android.content.Context;
+
+import com.sdl.atfandroid.util.LogTool;
 
 public class AtfApplication extends Application {
     private static AtfApplication instance;
@@ -10,6 +11,9 @@ public class AtfApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        LogTool.deleteLogFile();
+        LogTool.isLogToActivityEnabled = true;
+        LogTool.isLogToFileEnabled = true;
     }
 
     public static AtfApplication getInstance() {

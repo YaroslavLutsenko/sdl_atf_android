@@ -14,7 +14,7 @@ import androidx.annotation.RequiresPermission;
 
 import com.sdl.atfandroid.core.CoreRouter;
 import com.sdl.atfandroid.transport.enums.TransportType;
-import com.sdl.atfandroid.transport.util.LogTool;
+import com.sdl.atfandroid.util.LogTool;
 import com.sdl.atfandroid.transport.utl.TransportRecord;
 
 import java.io.IOException;
